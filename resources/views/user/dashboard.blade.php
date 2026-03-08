@@ -1,52 +1,30 @@
 <x-app-layout>
     <div class="user-dashboard dashboard-container">
+        <!-- Resume Required Alert -->
+        @if($resumeMissing)
+        <div style="background: #fee2e2; border: 1px solid #fecaca; border-radius: 8px; padding: 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+            <div style="color: #dc2626; flex-shrink: 0;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <div style="flex: 1;">
+                <h3 style="margin: 0 0 4px 0; color: #dc2626; font-size: 1rem;">Resume Required</h3>
+                <p style="margin: 0; color: #991b1b; font-size: 0.9rem;">You must upload your resume before applying for jobs. Please complete your profile.</p>
+            </div>
+            <a href="{{ route('profile.edit') }}" style="background: #dc2626; color: white; padding: 8px 16px; border-radius: 4px; text-decoration: none; font-size: 0.9rem; white-space: nowrap;">Upload Resume</a>
+        </div>
+        @endif
+
         <!-- Welcome Banner -->
         <div class="welcome-banner">
             <div>
                 <h2>Welcome back, {{ auth()->user()->name }}!</h2>
                 <p>Find your dream job and track your applications.</p>
             </div>
+            @if(!$resumeMissing)
             <a href="{{ route('jobs.index') }}" class="banner-action">Browse Jobs</a>
-        </div>
-
-        <!-- Stats Overview -->
-        <div class="quick-stats">
-            <div class="quick-stat-card">
-                <div class="stat-icon primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
-                        <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd" />
-                    </svg>
-                </div>
-                <div class="stat-details">
-                    <h4>{{ $totalApplications }}</h4>
-                    <p>Total Applications</p>
-                </div>
-            </div>
-
-            <div class="quick-stat-card">
-                <div class="stat-icon warning">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
-                    </svg>
-                </div>
-                <div class="stat-details">
-                    <h4>{{ $applications->where('status', 'Pending')->count() }}</h4>
-                    <p>Pending</p>
-                </div>
-            </div>
-
-            <div class="quick-stat-card">
-                <div class="stat-icon success">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                    </svg>
-                </div>
-                <div class="stat-details">
-                    <h4>{{ $applications->where('status', 'Hired')->count() }}</h4>
-                    <p>Hired</p>
-                </div>
-            </div>
+            @endif
         </div>
 
         <!-- Two Column Layout -->
@@ -240,25 +218,25 @@
                         <svg width="120" height="120" viewBox="0 0 120 120">
                             <circle cx="60" cy="60" r="54" fill="none" stroke="#dcdde1" stroke-width="8"/>
                             <circle cx="60" cy="60" r="54" fill="none" stroke="#3498db" stroke-width="8" 
-                                stroke-dasharray="339.292" stroke-dashoffset="84.823" stroke-linecap="round"/>
+                                stroke-dasharray="339.292" stroke-dashoffset="{{ 339.292 - (339.292 * $profileCompletion / 100) }}" stroke-linecap="round"/>
                         </svg>
                         <div class="completion-text">
-                            <div class="completion-percent">75%</div>
+                            <div class="completion-percent">{{ $profileCompletion }}%</div>
                             <div class="completion-label">Complete</div>
                         </div>
                     </div>
                     <ul class="profile-items">
-                        <li class="completed">
-                            <span>✓ Basic Information</span>
+                        <li class="{{ $profileCompletionItems['basic_info']['completed'] ? 'completed' : 'pending' }}">
+                            <span>{{ $profileCompletionItems['basic_info']['completed'] ? '✓' : '○' }} Basic Information</span>
                         </li>
-                        <li class="completed">
-                            <span>✓ Profile Photo</span>
+                        <li class="{{ $profileCompletionItems['profile_photo']['completed'] ? 'completed' : 'pending' }}">
+                            <span>{{ $profileCompletionItems['profile_photo']['completed'] ? '✓' : '○' }} Profile Photo</span>
                         </li>
-                        <li class="completed">
-                            <span>✓ Contact Details</span>
+                        <li class="{{ $profileCompletionItems['contact_details']['completed'] ? 'completed' : 'pending' }}">
+                            <span>{{ $profileCompletionItems['contact_details']['completed'] ? '✓' : '○' }} Contact Details</span>
                         </li>
-                        <li class="pending">
-                            <span>○ Resume Upload</span>
+                        <li class="{{ $profileCompletionItems['resume']['completed'] ? 'completed' : 'pending' }}">
+                            <span>{{ $profileCompletionItems['resume']['completed'] ? '✓' : '○' }} Resume Upload</span>
                         </li>
                     </ul>
                     <div style="text-align: center; margin-top: 15px;">

@@ -1,96 +1,172 @@
 <x-app-layout>
-    <div class="job-detail-container dashboard-container">
+    <div class="job-detail-container">
         <!-- Back Link -->
         <a href="{{ route('jobs.index') }}" class="back-link">
-            <svg xmlns="http://www.w3.org/2000/svg" style="width: 18px; height: 18px; margin-right: 8px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             Back to Jobs
         </a>
 
         <!-- Job Detail Card -->
-        <div class="detail-section" style="padding: 0; overflow: hidden;">
+        <div class="job-detail-card">
             <!-- Header -->
-            <div style="background: linear-gradient(135deg, var(--classic-primary) 0%, var(--classic-secondary) 100%); padding: 30px; color: white;">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+            <div class="job-detail-header">
+                <div class="header-top">
                     <div>
-                        <h1 style="font-size: 1.8rem; font-weight: bold; margin-bottom: 8px; color: white;">{{ $job->title }}</h1>
-                        <p style="opacity: 0.9; font-size: 1.1rem;">{{ $job->employer->name }}</p>
+                        <h1 class="job-title">{{ $job->title }}</h1>
+                        <p class="company-info">{{ $job->employer->name }}</p>
                     </div>
-                    <span style="background: white; color: var(--classic-primary); padding: 8px 16px; border-radius: 4px; font-weight: 600; font-size: 0.9rem;">
+                    <span class="job-type-badge">
                         {{ $job->job_type }}
                     </span>
                 </div>
                 
-                <div style="display: flex; flex-wrap: wrap; gap: 20px;">
-                    <div style="display: flex; align-items: center; gap: 8px; opacity: 0.9;">
-                        <svg xmlns="http://www.w3.org/2000/svg" style="width: 18px; height: 18px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div class="job-meta">
+                    <div class="meta-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="meta-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                         {{ $job->location }}
                     </div>
                     @if($job->salary)
-                    <div style="display: flex; align-items: center; gap: 8px; opacity: 0.9;">
-                        <svg xmlns="http://www.w3.org/2000/svg" style="width: 18px; height: 18px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div class="meta-item salary">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="meta-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         {{ $job->salary }}
                     </div>
                     @endif
-                    <div style="display: flex; align-items: center; gap: 8px; opacity: 0.9;">
-                        <svg xmlns="http://www.w3.org/2000/svg" style="width: 18px; height: 18px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div class="meta-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="meta-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                         Posted {{ $job->created_at->format('M d, Y') }}
                     </div>
+                    @if($job->application_deadline)
+                    <div class="meta-item" style="{{ $job->isApplicationOpen() ? '' : 'color: #fca5a5;' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="meta-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        @if($job->isApplicationOpen())
+                            Apply by {{ \Carbon\Carbon::parse($job->application_deadline)->format('M d, Y g:i A') }}
+                        @else
+                            Application closed
+                        @endif
+                    </div>
+                    @endif
                 </div>
             </div>
 
             <!-- Body -->
-            <div style="padding: 30px;">
-                <h2 style="font-size: 1.3rem; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid var(--classic-border); color: var(--classic-primary);">Job Description</h2>
-                <div style="color: var(--classic-text); line-height: 1.8; white-space: pre-wrap;">
-                    {{ $job->description }}
+            <div class="job-detail-body">
+                <!-- Job Description Section -->
+                <div class="job-section">
+                    <h2 class="job-section-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Job Description
+                    </h2>
+                    <div class="job-description-content">
+                        {{ $job->description }}
+                    </div>
                 </div>
 
                 <!-- Application Section -->
                 @auth
                     @if(auth()->user()->role === 'user')
                         @if($hasApplied)
-                            <div style="background: #d4edda; border: 1px solid #c3e6cb; padding: 20px; border-radius: 4px; margin-top: 30px; display: flex; align-items: center; gap: 15px;">
-                                <svg xmlns="http://www.w3.org/2000/svg" style="width: 30px; height: 30px; color: #155724;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <div class="already-applied-box">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                <span style="font-weight: 600; color: #155724;">You have already applied for this job!</span>
+                                <p>You have already applied for this job!</p>
                             </div>
-                        @else
-                            <div style="background: var(--classic-bg); padding: 25px; border-radius: 4px; margin-top: 30px;">
-                                <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; color: var(--classic-primary);">Apply for this job</h3>
+                        @elseif($job->isApplicationOpen())
+                            <div class="apply-box">
+                                <h3>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                                    </svg>
+                                    Apply for this job
+                                </h3>
                                 <form method="POST" action="{{ route('jobs.apply', $job->id) }}" enctype="multipart/form-data">
                                     @csrf
                                     <div class="form-group">
-                                        <label class="form-label">Upload Resume (Optional)</label>
-                                        <input type="file" name="resume" style="width: 100%; padding: 12px; border: 1px solid var(--classic-border); border-radius: 3px;" accept=".pdf,.doc,.docx">
-                                        <p style="font-size: 0.85rem; color: var(--classic-text-muted); margin-top: 8px;">Upload your resume in PDF, DOC, or DOCX format.</p>
+                                        <label class="form-label">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16" style="display: inline; vertical-align: middle; margin-right: 5px;">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                            Upload Resume 
+                                            @if(!auth()->user()->resume)
+                                                <span style="color: red;">*</span>
+                                            @else
+                                                <span style="color: var(--classic-text-muted); font-weight: normal;"> (Optional - you already have a resume on file)</span>
+                                            @endif
+                                        </label>
+                                        <input 
+                                            type="file" 
+                                            name="resume" 
+                                            class="form-input"
+                                            accept=".pdf,.doc,.docx"
+                                            {{ !auth()->user()->resume ? 'required' : '' }}
+                                        >
+                                        <p class="help-text">
+                                            @if(!auth()->user()->resume)
+                                                You must upload your resume to apply for this job. Accepted formats: PDF, DOC, or DOCX.
+                                            @else
+                                                Upload your resume in PDF, DOC, or DOCX format.
+                                            @endif
+                                        </p>
                                     </div>
-                                    <button type="submit" class="btn btn-primary" style="padding: 12px 30px; font-size: 1rem;">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                                        </svg>
                                         Submit Application
                                     </button>
                                 </form>
                             </div>
+                        @else
+                            <div class="application-closed-box">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <p>Applications are closed for this job.</p>
+                            </div>
                         @endif
                     @elseif(auth()->user()->role === 'employer')
-                        <div style="background: var(--classic-bg); border-left: 4px solid var(--classic-warning); padding: 20px; border-radius: 4px; margin-top: 30px;">
-                            <p style="color: var(--classic-text-muted); margin: 0;">You are logged in as an employer. You cannot apply for jobs.</p>
+                        <div class="employer-notice-box">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24" style="display: inline; vertical-align: middle; margin-right: 8px; color: var(--classic-warning);">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <p style="display: inline;">You are logged in as an employer. You cannot apply for jobs.</p>
                         </div>
                     @endif
                 @else
-                    <div style="background: var(--classic-bg); padding: 25px; border-radius: 4px; margin-top: 30px;">
-                        <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 15px; color: var(--classic-primary);">Apply for this job</h3>
-                        <p style="color: var(--classic-text-muted); margin-bottom: 20px;">Please login to apply for this job.</p>
-                        <a href="{{ route('login') }}" class="btn btn-primary">Login to Apply</a>
+                    @if($job->isApplicationOpen())
+                    <div class="login-to-apply-box">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="48" height="48" style="margin: 0 auto 15px; display: block; color: var(--classic-accent);">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                        </svg>
+                        <p>Please login to apply for this job.</p>
+                        <a href="{{ route('login') }}" class="btn btn-primary btn-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                            </svg>
+                            Login to Apply
+                        </a>
                     </div>
+                    @else
+                    <div class="application-closed-box">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p>Applications are closed for this job.</p>
+                    </div>
+                    @endif
                 @endauth
             </div>
         </div>

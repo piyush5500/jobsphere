@@ -40,6 +40,28 @@ class ProfileController extends Controller
             $request->user()->resume = $path;
         }
 
+        // Handle profile photo upload
+        if ($request->hasFile('profile_photo')) {
+            $photo = $request->file('profile_photo');
+            $filename = time() . '_' . $photo->getClientOriginalName();
+            $path = $photo->storeAs('profile_photos', $filename, 'public');
+            $request->user()->profile_photo = $path;
+        }
+
+        // Handle other profile fields
+        if ($request->has('phone')) {
+            $request->user()->phone = $request->input('phone');
+        }
+        if ($request->has('address')) {
+            $request->user()->address = $request->input('address');
+        }
+        if ($request->has('bio')) {
+            $request->user()->bio = $request->input('bio');
+        }
+        if ($request->has('skills')) {
+            $request->user()->skills = $request->input('skills');
+        }
+
         $request->user()->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');

@@ -42,6 +42,8 @@ class JobController extends Controller
             'location' => 'required|string|max:255',
             'salary' => 'nullable|string|max:255',
             'job_type' => 'required|in:Full-time,Part-time,Contract,Internship',
+            'application_deadline' => 'nullable|date|after:now',
+            'is_active' => 'boolean',
         ]);
 
         Job::create([
@@ -51,6 +53,8 @@ class JobController extends Controller
             'location' => $request->location,
             'salary' => $request->salary,
             'job_type' => $request->job_type,
+            'application_deadline' => $request->application_deadline,
+            'is_active' => $request->is_active ?? true,
         ]);
 
         return redirect()->route('employer.jobs.index')
@@ -80,6 +84,8 @@ class JobController extends Controller
             'location' => 'required|string|max:255',
             'salary' => 'nullable|string|max:255',
             'job_type' => 'required|in:Full-time,Part-time,Contract,Internship',
+            'application_deadline' => 'nullable|date|after:now',
+            'is_active' => 'boolean',
         ]);
 
         $job->update([
@@ -88,6 +94,8 @@ class JobController extends Controller
             'location' => $request->location,
             'salary' => $request->salary,
             'job_type' => $request->job_type,
+            'application_deadline' => $request->application_deadline,
+            'is_active' => $request->is_active ?? true,
         ]);
 
         return redirect()->route('employer.jobs.index')
@@ -114,8 +122,10 @@ class JobController extends Controller
         $job = Job::where('employer_id', Auth::id())
             ->with(['applications.user'])
             ->findOrFail($id);
-        
-        return view('employer.jobs.applications', compact('job'));
+
+        $applications = $job->applications;
+
+        return view('employer.jobs.applications', compact('job', 'applications'));
     }
 
     /**
@@ -128,7 +138,7 @@ class JobController extends Controller
         })->findOrFail($applicationId);
 
         $request->validate([
-            'status' => 'required|in:Applied,Pending,Reviewed,Shortlisted,Rejected,Hired',
+            'status' => 'required|in:Applied,Under Review,Approved,Rejected',
         ]);
 
         $application->update(['status' => $request->status]);

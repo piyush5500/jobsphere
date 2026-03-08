@@ -13,12 +13,29 @@ class RoleMiddleware
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-   public function handle($request, Closure $next, $role)
-{
-    if (!auth()->check() || auth()->user()->role !== $role) {
-        abort(403);
-    }
+    public function handle($request, Closure $next, $role)
+    {
+        // Check if user is authenticated
+        if (!$request->user()) {
+            abort(403);
+        }
 
-    return $next($request);
-}
+        // Check role from session first (this is set during login per role)
+        // Fall back to user role if session role not set
+        $sessionRole = $request->session()->get('role');
+        
+        if ($sessionRole) {
+            // Use session role - this allows multiple role logins in different tabs
+            if ($sessionRole !== $role) {
+                abort(403);
+            }
+        } else {
+            // Fall back to user role if no session role
+            if ($request->user()->role !== $role) {
+                abort(403);
+            }
+        }
+
+        return $next($request);
+    }
 }

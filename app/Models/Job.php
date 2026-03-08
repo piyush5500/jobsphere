@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Carbon\Carbon;
 
 class Job extends Model
 {
@@ -20,7 +21,28 @@ class Job extends Model
         'location',
         'salary',
         'job_type',
+        'application_deadline',
+        'is_active',
     ];
+
+    /**
+     * Check if the job is accepting applications.
+     * Returns true if:
+     * - The job is active
+     * - No deadline is set, OR deadline has not passed
+     */
+    public function isApplicationOpen(): bool
+    {
+        if (!$this->is_active) {
+            return false;
+        }
+
+        if (is_null($this->application_deadline)) {
+            return true;
+        }
+
+        return Carbon::parse($this->application_deadline)->isFuture();
+    }
 
     /**
      * Get the employer that owns the job.

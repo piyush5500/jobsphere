@@ -1,44 +1,20 @@
-upda# Dashboard Update TODO List
+# TODO - Admin User Management
 
-## Phase 1: Enhance Classic CSS - ✅ COMPLETED
-- [x] Add sidebar styles
-- [x] Add timeline styles  
-- [x] Add progress bar styles
-- [x] Add chart placeholder styles
-- [x] Add notification/alerts styles
-- [x] Add card hover effects
-- [x] Add welcome banner styles
-- [x] Add two-column layout
-- [x] Add responsive styles
+## Task: Admin can see jobseekers and employees differently, and can pause/remove jobseekers
 
-## Phase 2: Update Admin Dashboard - ✅ COMPLETED
-- [x] Add welcome banner
-- [x] Add quick stats overview
-- [x] Add activity timeline
-- [x] Add job categories breakdown
-- [x] Add system status indicators
-- [x] Add two-column layout
-- [x] Add recent jobs section
+### Steps:
+1. [x] Read and understand existing code structure
+2. [ ] Update AdminDashboardController - Add jobseekers() method
+3. [ ] Update AdminController - Add toggleJobseekerStatus() and deleteJobseeker() methods
+4. [ ] Update routes/web.php - Add routes for jobseeker management
+5. [ ] Update resources/views/admin/users.blade.php - Add tabs to separate jobseekers/employees and add pause/delete actions
+6. [ ] Update admin dashboard - Add quick action for managing jobseekers
 
-## Phase 3: Update Employer Dashboard - ✅ COMPLETED
-- [x] Add welcome banner
-- [x] Add quick stats overview
-- [x] Add hiring pipeline visualization
-- [x] Add recent activity feed
-- [x] Add company profile link
-- [x] Add job performance section
-- [x] Add tips card
+### Progress:
+- Step 1: COMPLETED - Analyzed existing code
+- Step 2: PENDING - Add jobseekers method to AdminDashboardController
+- Step 3: PENDING - Add toggle status and delete methods to AdminController
+- Step 4: PENDING - Add routes for jobseeker management
+- Step 5: PENDING - Update users.blade.php with tabs and action buttons
+- Step 6: PENDING - Update admin dashboard with jobseekers quick action
 
-## Phase 4: Update User Dashboard - ✅ COMPLETED
-- [x] Add welcome banner
-- [x] Add quick stats overview
-- [x] Add profile completion progress
-- [x] Add application timeline
-- [x] Add job recommendations
-- [x] Add application tips
-- [x] Add application status timeline
-
-## Phase 5: Testing - ✅ COMPLETED
-- [x] All dashboard files updated successfully
-- [x] CSS styles enhanced with new components
-- [x] Responsive behavior included in styles

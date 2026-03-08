@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\RoleSessionManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -29,7 +30,16 @@ class AdminAuthController extends Controller
 
         // Attempt to login with admin role only
         if (Auth::attempt(array_merge($credentials, ['role' => 'admin']))) {
+            // Always regenerate session to create a unique session for this role
+            // This ensures each role has its own session ID stored in role-specific cookie
             $request->session()->regenerate();
+            
+            // Store the admin role in session
+            $request->session()->put('role', 'admin');
+            
+            // Store role-specific session - this saves the NEW session ID to a role-specific cookie
+            RoleSessionManager::storeRoleSession('admin');
+            
             return redirect()->intended('/admin/dashboard')->with('success', 'Welcome back, Admin!');
         }
 
@@ -43,10 +53,17 @@ class AdminAuthController extends Controller
      */
     public function logout(Request $request): RedirectResponse
     {
+        $role = $request->session()->get('role');
+        
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
+        // Clear role-specific session if role was stored
+        if ($role) {
+            RoleSessionManager::clearRoleSession($role);
+        }
 
         return redirect('/admin/login');
     }

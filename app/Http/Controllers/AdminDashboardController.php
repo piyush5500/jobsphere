@@ -75,6 +75,15 @@ class AdminDashboardController extends Controller
     }
 
     /**
+     * Display all jobseekers.
+     */
+    public function jobseekers()
+    {
+        $jobseekers = User::where('role', 'user')->latest()->paginate(20);
+        return view('admin.jobseekers', compact('jobseekers'));
+    }
+
+    /**
      * Display job details.
      */
     public function showJob($id)

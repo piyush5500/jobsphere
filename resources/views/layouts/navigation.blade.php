@@ -35,6 +35,13 @@
                     <x-nav-link :href="route('jobs.index')" :active="request()->routeIs('jobs.index')">
                         {{ __('Browse Jobs') }}
                     </x-nav-link>
+
+                    <!-- Messages Link - Visible to authenticated users -->
+                    @auth
+                    <x-nav-link :href="route('chat.index')" :active="request()->routeIs('chat.index')">
+                        {{ __('Messages') }}
+                    </x-nav-link>
+                    @endauth
                 </div>
             </div>
 
@@ -63,6 +70,11 @@
                             {{ __('Profile') }}
                         </x-dropdown-link>
 
+                        <!-- Chat Link -->
+                        <x-dropdown-link :href="route('chat.index')">
+                            {{ __('Messages') }}
+                        </x-dropdown-link>
+
                         <!-- Role-specific links -->
                         @if(Auth::user()->role === 'employer')
                             <x-dropdown-link :href="route('employer.jobs.create')">
@@ -78,6 +90,9 @@
                         @elseif(Auth::user()->role === 'admin')
                             <x-dropdown-link :href="route('admin.users')">
                                 {{ __('Manage Users') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('admin.employees.index')">
+                                {{ __('Manage Employees') }}
                             </x-dropdown-link>
                             <x-dropdown-link :href="route('admin.jobs')">
                                 {{ __('Manage Jobs') }}
@@ -101,8 +116,9 @@
                 </x-dropdown>
                 @else
                 <div class="flex items-center gap-4">
-                    <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-300 underline">Log in</a>
-                    <a href="{{ route('register') }}" class="text-sm text-gray-700 dark:text-gray-300 underline">Register</a>
+                    @if(Route::has('admin.login'))
+                    <a href="{{ route('admin.login') }}" class="text-sm text-gray-700 dark:text-gray-300 underline">Admin Login</a>
+                    @endif
                 </div>
                 @endauth
             </div>
@@ -140,6 +156,10 @@
                 <x-responsive-nav-link :href="route('jobs.index')" :active="request()->routeIs('jobs.index')">
                     {{ __('Browse Jobs') }}
                 </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('chat.index')" :active="request()->routeIs('chat.index')">
+                    {{ __('Messages') }}
+                </x-responsive-nav-link>
             @endauth
         </div>
 
@@ -154,6 +174,10 @@
             <div class="mt-3 space-y-1">
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Profile') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('chat.index')">
+                    {{ __('Messages') }}
                 </x-responsive-nav-link>
 
                 <!-- Authentication -->

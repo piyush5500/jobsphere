@@ -15,24 +15,38 @@ class UserDashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-        
+
+        // Check if user has uploaded a resume
+        $resumeMissing = empty($user->resume);
+
         // Get user's applications
         $applications = Application::where('user_id', $user->id)
             ->with('job')
             ->latest()
             ->take(5)
             ->get();
-        
+
         // Get total application count
         $totalApplications = Application::where('user_id', $user->id)->count();
-        
+
         // Get available jobs for browsing
         $availableJobs = Job::with('employer')
             ->latest()
             ->take(5)
             ->get();
 
-        return view('user.dashboard', compact('applications', 'totalApplications', 'availableJobs'));
+        // Get profile completion data
+        $profileCompletion = $user->profile_completion;
+        $profileCompletionItems = $user->getProfileCompletionItems();
+
+        return view('user.dashboard', compact(
+            'applications', 
+            'totalApplications', 
+            'availableJobs', 
+            'resumeMissing',
+            'profileCompletion',
+            'profileCompletionItems'
+        ));
     }
 
     /**

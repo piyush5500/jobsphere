@@ -15,6 +15,11 @@ class ProfileUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
+        $user = $this->user();
+        $resumeRule = $user && $user->resume 
+            ? ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:5120']
+            : ['required', 'file', 'mimes:pdf,doc,docx', 'max:5120'];
+
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => [
@@ -25,6 +30,7 @@ class ProfileUpdateRequest extends FormRequest
                 'max:255',
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
+            'resume' => $resumeRule,
         ];
     }
 }

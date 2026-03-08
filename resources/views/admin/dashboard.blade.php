@@ -9,45 +9,6 @@
             <a href="{{ route('admin.users') }}" class="banner-action">Manage Users</a>
         </div>
 
-        <!-- Stats Overview -->
-        <div class="quick-stats">
-            <div class="quick-stat-card">
-                <div class="stat-icon primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
-                    </svg>
-                </div>
-                <div class="stat-details">
-                    <h4>{{ $stats['totalUsers'] }}</h4>
-                    <p>Total Users</p>
-                </div>
-            </div>
-
-            <div class="quick-stat-card">
-                <div class="stat-icon success">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z" clip-rule="evenodd" />
-                    </svg>
-                </div>
-                <div class="stat-details">
-                    <h4>{{ $stats['totalJobs'] }}</h4>
-                    <p>Active Jobs</p>
-                </div>
-            </div>
-
-            <div class="quick-stat-card">
-                <div class="stat-icon warning">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
-                    </svg>
-                </div>
-                <div class="stat-details">
-                    <h4>{{ $stats['totalApplications'] }}</h4>
-                    <p>Applications</p>
-                </div>
-            </div>
-        </div>
-
         <!-- Two Column Layout -->
         <div class="two-column">
             <!-- Main Content -->
@@ -117,6 +78,16 @@
                             <p>View and manage all registered users</p>
                         </a>
 
+                        <a href="{{ route('admin.employees.index') }}" class="action-card">
+                            <div class="action-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <h3>Manage Employees</h3>
+                            <p>Add, edit, pause or delete employees</p>
+                        </a>
+
                         <a href="{{ route('admin.jobs') }}" class="action-card">
                             <div class="action-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 20 20" fill="currentColor">
@@ -152,41 +123,45 @@
 
                 <!-- Recent Applications -->
                 <div class="recent-section">
-                    <h2 class="section-title">Recent Applications</h2>
-                    <div class="recent-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Applicant</th>
-                                    <th>Job</th>
-                                    <th>Status</th>
-                                    <th>Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($recentApplications as $application)
-                                <tr>
-                                    <td>
-                                        <div class="user-cell">
-                                            <div class="avatar avatar-sm">{{ strtoupper(substr($application->user->name, 0, 1)) }}</div>
-                                            <span>{{ $application->user->name }}</span>
-                                        </div>
-                                    </td>
-                                    <td>{{ $application->job->title }}</td>
-                                    <td>
-                                        <span class="status-badge status-{{ strtolower(str_replace(' ', '-', $application->status)) }}">
-                                            {{ $application->status }}
-                                        </span>
-                                    </td>
-                                    <td>{{ $application->created_at->format('M d, Y') }}</td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="4" class="empty-cell">No recent applications</td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                    <div class="section-header">
+                        <h2 class="section-title">Recent Applications</h2>
+                        <a href="{{ route('admin.applications') }}" class="view-all-link">View All →</a>
+                    </div>
+                    <div class="applications-cards">
+                        @forelse($recentApplications as $application)
+                        <div class="application-item">
+                            <div class="application-info">
+                                <div class="avatar">{{ strtoupper(substr($application->user->name, 0, 1)) }}</div>
+                                <div class="details">
+                                    <h4>{{ $application->user->name }}</h4>
+                                    <p class="job-title">{{ $application->job->title }}</p>
+                                </div>
+                            </div>
+                            <div class="application-meta">
+                                @if($application->user->resume)
+                                <a href="{{ asset('storage/' . $application->user->resume) }}" target="_blank" class="resume-btn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" />
+                                    </svg>
+                                    Resume
+                                </a>
+                                @else
+                                <span class="no-resume">No Resume</span>
+                                @endif
+                                <span class="status-badge status-{{ strtolower(str_replace(' ', '-', $application->status)) }}">
+                                    {{ $application->status }}
+                                </span>
+                                <span class="date">{{ $application->created_at->format('M d, Y') }}</span>
+                            </div>
+                        </div>
+                        @empty
+                        <div class="empty-state">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="empty-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <p>No recent applications</p>
+                        </div>
+                        @endforelse
                     </div>
                 </div>
 

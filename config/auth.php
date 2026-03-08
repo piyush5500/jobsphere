@@ -40,6 +40,22 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        
+        // Separate guards for each role to allow multiple logins
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
+        
+        'employer' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
+        
+        'user' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
     ],
 
     /*

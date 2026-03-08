@@ -84,8 +84,19 @@
             color: #3498db;
             text-decoration: none;
         }
-        .auth-links a:hover {
-            text-decoration: underline;
+        .help-text {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        .info-box {
+            background: #e8f4fc;
+            color: #2980b9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border: 1px solid #b8d4e8;
+            text-align: center;
         }
         .error-message {
             background: #fde8e8;
@@ -94,11 +105,6 @@
             border-radius: 4px;
             margin-bottom: 20px;
             border: 1px solid #f5c6cb;
-        }
-        .help-text {
-            font-size: 0.85rem;
-            color: #7f8c8d;
-            margin-top: 5px;
         }
     </style>
 </head>
@@ -115,6 +121,10 @@
             </div>
         @endif
 
+        <div class="info-box">
+            Register as a Job Seeker. If you want to post jobs, contact your administrator.
+        </div>
+
         <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
             @csrf
 
@@ -126,20 +136,6 @@
             <div class="form-group">
                 <label for="email" class="form-label">Email Address</label>
                 <input id="email" type="email" name="email" value="{{ old('email') }}" required class="form-input">
-            </div>
-
-            <div class="form-group">
-                <label for="role" class="form-label">Register As</label>
-                <select name="role" id="role" class="form-select" required>
-                    <option value="user">Job Seeker</option>
-                    <option value="employer">Employer</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="resume" class="form-label">Resume (Optional)</label>
-                <input id="resume" type="file" name="resume" accept=".pdf,.doc,.docx" class="form-input">
-                <p class="help-text">Upload your resume (PDF, DOC, or DOCX files only)</p>
             </div>
 
             <div class="form-group">

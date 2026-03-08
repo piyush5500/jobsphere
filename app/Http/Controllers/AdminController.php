@@ -34,6 +34,34 @@ class AdminController extends Controller
         return back()->with('success', 'User Deleted Successfully');
     }
 
+    /**
+     * Toggle jobseeker status (pause/activate).
+     */
+    public function toggleJobseekerStatus($id)
+    {
+        $user = User::where('role', 'user')->findOrFail($id);
+        
+        if ($user->is_active) {
+            $user->suspend();
+            $message = 'Jobseeker has been paused.';
+        } else {
+            $user->activate();
+            $message = 'Jobseeker has been activated.';
+        }
+
+        return back()->with('success', $message);
+    }
+
+    /**
+     * Delete a jobseeker.
+     */
+    public function deleteJobseeker($id)
+    {
+        $user = User::where('role', 'user')->findOrFail($id);
+        $user->delete();
+        return back()->with('success', 'Jobseeker removed successfully.');
+    }
+
     public function deleteJob($id)
     {
         $job = Job::findOrFail($id);

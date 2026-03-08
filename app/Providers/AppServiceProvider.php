@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Services\RoleSessionManager;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -11,7 +12,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Register RoleSessionManager as a singleton
+        $this->app->singleton(RoleSessionManager::class, function ($app) {
+            return new RoleSessionManager();
+        });
     }
 
     /**

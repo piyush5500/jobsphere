@@ -24,6 +24,8 @@ class RegisteredUserController extends Controller
 
     /**
      * Handle an incoming registration request.
+     * Only job seekers (user role) can register themselves.
+     * Employers must be created by admin.
      *
      * @throws \Illuminate\Validation\ValidationException
      */
@@ -33,15 +35,16 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => ['required', 'in:user,employer'],
             'resume' => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:5120'],
         ]);
 
+        // Only allow 'user' role for self-registration
+        // Employers (role=employer) can only be created by admin
         $userData = [
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role ?? 'user',
+            'role' => 'user', // Force user role - job seeker
         ];
 
         // Handle resume upload

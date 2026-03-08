@@ -61,6 +61,19 @@ class JobController extends Controller
      */
     public function apply(Request $request, Job $job)
     {
+        $user = Auth::user();
+
+        // Check if job is active and accepting applications
+        if (!$job->isApplicationOpen()) {
+            return back()->with('error', 'This job is no longer accepting applications.');
+        }
+
+        // Check if user has uploaded a resume
+        if (empty($user->resume)) {
+            return redirect()->route('profile.edit')
+                ->with('error', 'Please upload your resume before applying for jobs.');
+        }
+
         // Check if user has already applied
         $existingApplication = Application::where('job_id', $job->id)
             ->where('user_id', Auth::id())

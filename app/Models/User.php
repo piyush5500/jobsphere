@@ -25,6 +25,12 @@ class User extends Authenticatable
         'password',
         'role',
         'resume',
+        'is_active',
+        'phone',
+        'address',
+        'bio',
+        'skills',
+        'profile_photo',
     ];
 
     /**
@@ -96,5 +102,86 @@ class User extends Authenticatable
     public function isEmployee()
     {
         return $this->role === 'employer';
+    }
+
+    /**
+     * Check if user is active.
+     */
+    public function isActive()
+    {
+        return $this->is_active === true;
+    }
+
+    /**
+     * Suspend/pause the user.
+     */
+    public function suspend()
+    {
+        $this->is_active = false;
+        $this->save();
+    }
+
+    /**
+     * Activate the user.
+     */
+    public function activate()
+    {
+        $this->is_active = true;
+        $this->save();
+    }
+
+    /**
+     * Calculate profile completion percentage.
+     */
+    public function getProfileCompletionAttribute()
+    {
+        $fields = [
+            'name' => !empty($this->name),
+            'email' => !empty($this->email),
+            'phone' => !empty($this->phone),
+            'address' => !empty($this->address),
+            'bio' => !empty($this->bio),
+            'skills' => !empty($this->skills),
+            'resume' => !empty($this->resume),
+            'profile_photo' => !empty($this->profile_photo),
+        ];
+
+        $completed = count(array_filter($fields));
+        $total = count($fields);
+
+        return round(($completed / $total) * 100);
+    }
+
+    /**
+     * Get profile completion items with their status.
+     */
+    public function getProfileCompletionItems()
+    {
+        return [
+            'basic_info' => [
+                'label' => 'Basic Information',
+                'completed' => !empty($this->name) && !empty($this->email),
+            ],
+            'profile_photo' => [
+                'label' => 'Profile Photo',
+                'completed' => !empty($this->profile_photo),
+            ],
+            'contact_details' => [
+                'label' => 'Contact Details',
+                'completed' => !empty($this->phone) && !empty($this->address),
+            ],
+            'bio' => [
+                'label' => 'Bio/About Me',
+                'completed' => !empty($this->bio),
+            ],
+            'skills' => [
+                'label' => 'Skills',
+                'completed' => !empty($this->skills),
+            ],
+            'resume' => [
+                'label' => 'Resume Upload',
+                'completed' => !empty($this->resume),
+            ],
+        ];
     }
 }

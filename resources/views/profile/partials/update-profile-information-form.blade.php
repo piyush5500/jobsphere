@@ -47,11 +47,61 @@
             @endif
         </div>
 
+        <!-- Phone -->
+        <div>
+            <x-input-label for="phone" :value="__('Phone')" />
+            <x-text-input id="phone" name="phone" type="text" class="mt-1 block w-full" :value="old('phone', $user->phone)" autocomplete="phone" placeholder="Enter your phone number" />
+            <x-input-error class="mt-2" :messages="$errors->get('phone')" />
+        </div>
+
+        <!-- Address -->
+        <div>
+            <x-input-label for="address" :value="__('Address')" />
+            <x-text-input id="address" name="address" type="text" class="mt-1 block w-full" :value="old('address', $user->address)" autocomplete="address" placeholder="Enter your address" />
+            <x-input-error class="mt-2" :messages="$errors->get('address')" />
+        </div>
+
+        <!-- Bio -->
+        <div>
+            <x-input-label for="bio" :value="__('Bio / About Me')" />
+            <textarea id="bio" name="bio" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" rows="4" placeholder="Tell us about yourself">{{ old('bio', $user->bio) }}</textarea>
+            <x-input-error class="mt-2" :messages="$errors->get('bio')" />
+        </div>
+
+        <!-- Skills -->
+        <div>
+            <x-input-label for="skills" :value="__('Skills')" />
+            <textarea id="skills" name="skills" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" rows="3" placeholder="List your skills (e.g., PHP, JavaScript, Laravel, React)">{{ old('skills', $user->skills) }}</textarea>
+            <x-input-error class="mt-2" :messages="$errors->get('skills')" />
+        </div>
+
+        <!-- Profile Photo -->
+        <div>
+            <x-input-label for="profile_photo" :value="__('Profile Photo')" />
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                {{ __('Upload a profile photo (JPG, PNG or GIF)') }}
+            </p>
+            
+            @if($user->profile_photo)
+                <div class="mb-3 p-3 bg-gray-100 dark:bg-gray-700 rounded flex items-center gap-4">
+                    <img src="{{ asset('storage/' . $user->profile_photo) }}" alt="Profile Photo" class="w-16 h-16 rounded-full object-cover">
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            {{ __('Current photo') }}
+                        </p>
+                    </div>
+                </div>
+            @endif
+            
+            <input type="file" name="profile_photo" id="profile_photo" accept=".jpg,.jpeg,.png,.gif" class="mt-1 block w-full">
+            <x-input-error class="mt-2" :messages="$errors->get('profile_photo')" />
+        </div>
+
         <!-- Resume Upload -->
         <div>
             <x-input-label for="resume" :value="__('Resume')" />
             <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                {{ __('Upload your resume (PDF, DOC, or DOCX files only)') }}
+                {{ __('Upload your resume (PDF, DOC, or DOCX files only) - Required for applying to jobs') }}
             </p>
             
             @if($user->resume)
@@ -84,3 +134,4 @@
         </div>
     </form>
 </section>
+
