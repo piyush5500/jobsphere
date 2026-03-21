@@ -91,8 +91,8 @@
                             <x-dropdown-link :href="route('admin.users')">
                                 {{ __('Manage Users') }}
                             </x-dropdown-link>
-                            <x-dropdown-link :href="route('admin.employees.index')">
-                                {{ __('Manage Employees') }}
+<x-dropdown-link :href="route('admin.employees.index')">
+                                {{ __('Manage Companies') }}
                             </x-dropdown-link>
                             <x-dropdown-link :href="route('admin.jobs')">
                                 {{ __('Manage Jobs') }}

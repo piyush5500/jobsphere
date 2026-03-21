@@ -22,8 +22,8 @@
                 <a href="{{ route('admin.jobseekers') }}" class="tab {{ request()->routeIs('admin.jobseekers') ? 'tab-active' : '' }}">
                     Job Seekers
                 </a>
-                <a href="{{ route('admin.employees.index') }}" class="tab">
-                    Employees
+<a href="{{ route('admin.employees.index') }}" class="tab">
+                    Companies
                 </a>
             </div>
         </div>
