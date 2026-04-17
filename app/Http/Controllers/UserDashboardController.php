@@ -40,49 +40,49 @@ class UserDashboardController extends Controller
         $profileCompletion = $user->profile_completion;
         $profileCompletionItems = $user->getProfileCompletionItems();
 
-        // Company-related data (if user has employer role or company association)
+        // Company-related data (optimized: reduced queries)
         $companyJobs = null;
         $companyApplications = null;
         $companyStats = null;
 
         // Check if user can manage company/employer features
         if ($user->role === 'employer' || $user->can_post_jobs ?? false) {
-            $companyJobs = Job::where('user_id', $user->id)
+            $companyJobs = Job::where('employer_id', $user->id)
                 ->withCount('applications')
                 ->latest()
                 ->take(5)
                 ->get();
 
+            $statusCounts = Application::whereHas('job', function($q) use ($user) {
+                $q->where('employer_id', $user->id);
+            })->selectRaw('status, count(*) as cnt')
+                ->groupBy('status')
+                ->pluck('cnt', 'status')
+                ->toArray();
+
             $companyStats = [
-                'totalJobs' => Job::where('user_id', $user->id)->count(),
-                'totalApplications' => Application::whereHas('job', function($q) use ($user) {
-                    $q->where('user_id', $user->id);
-                })->count(),
-                'pendingApplications' => Application::whereHas('job', function($q) use ($user) {
-                    $q->where('user_id', $user->id);
-                })->where('status', 'Pending')->count(),
-                'reviewedApplications' => Application::whereHas('job', function($q) use ($user) {
-                    $q->where('user_id', $user->id);
-                })->where('status', 'Reviewed')->count(),
-                'hiredApplications' => Application::whereHas('job', function($q) use ($user) {
-                    $q->where('user_id', $user->id);
-                })->where('status', 'Hired')->count(),
+                'totalJobs' => $companyJobs->count(),
+                'totalApplications' => array_sum($statusCounts),
+                'pendingApplications' => $statusCounts['Pending'] ?? 0,
+                'reviewedApplications' => $statusCounts['Reviewed'] ?? 0,
+                'hiredApplications' => $statusCounts['Hired'] ?? 0,
             ];
 
             $companyApplications = Application::whereHas('job', function($q) use ($user) {
-                $q->where('user_id', $user->id);
+                $q->where('employer_id', $user->id);
             })
-            ->with(['job', 'user'])
-            ->latest()
-            ->take(5)
-            ->get();
+                ->with(['job.employer', 'user'])
+                ->latest()
+                ->take(5)
+                ->get();
         }
 
-// Get company staff (if company has staff)
-        $companyStaff = User::where('company_id', $user->id)
-            ->orWhere('employer_id', $user->id)
-            ->take(5)
-            ->get();
+// Get company staff (if company has staff) - REMOVED due to missing database columns 'company_id'/'employer_id' in users table
+// TODO: Reimplement after adding migration for employer_id column if company staff feature needed
+        // $companyStaff = User::where('company_id', $user->id)
+        //     ->orWhere('employer_id', $user->id)
+        //     ->take(5)
+        //     ->get();
 
         return view('user.dashboard', compact(
             'applications', 
@@ -93,8 +93,8 @@ class UserDashboardController extends Controller
             'profileCompletionItems',
             'companyJobs',
             'companyApplications',
-'companyStats',
-            'companyStaff'
+            'companyStats'
+            // 'companyStaff' - removed
         ));
     }
 

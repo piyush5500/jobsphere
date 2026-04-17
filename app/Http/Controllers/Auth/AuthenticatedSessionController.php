@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Services\RoleSessionManager;
+
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,17 +27,7 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
-        // Store the role in the session
-        $user = Auth::user();
-        
-        // Always regenerate session to create a unique session for this role
-        // This ensures each role has its own session ID stored in role-specific cookie
         $request->session()->regenerate();
-        
-        $request->session()->put('role', $user->role);
-
-        // Store role-specific session - this saves the NEW session ID to a role-specific cookie
-        RoleSessionManager::storeRoleSession($user->role);
 
         return redirect()->intended(route('dashboard', absolute: false));
     }
@@ -47,19 +37,13 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        $role = $request->session()->get('role');
-        
-        Auth::guard('web')->logout();
+        Auth::logout();
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
 
-        // Clear role-specific session if role was stored
-        if ($role) {
-            RoleSessionManager::clearRoleSession($role);
-        }
-
         return redirect('/');
+
     }
 }

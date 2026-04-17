@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -46,15 +46,15 @@ Route::middleware(['auth'])->group(function () {
         return redirect()->route('login');
     })->middleware(['verified'])->name('dashboard');
 
-    // User Routes (Job Seeker) - with role-specific session
-    Route::middleware(['role.session:user'])->group(function () {
+    // User Routes (Job Seeker) - with role check
+    Route::middleware(['auth', 'role:user'])->group(function () {
         Route::get('/user/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
         Route::get('/user/applications', [UserDashboardController::class, 'applications'])->name('user.applications');
         Route::post('/jobs/apply/{job}', [PublicJobController::class, 'apply'])->name('jobs.apply');
     });
 
-    // Employer Routes - with role-specific session
-    Route::middleware(['role.session:employer'])->group(function () {
+    // Employer Routes - with role check
+    Route::middleware(['auth', 'role:employer'])->group(function () {
         Route::get('/employer/dashboard', [EmployerDashboardController::class, 'index'])->name('employer.dashboard');
         Route::get('/employer/jobs', [EmployerJobController::class, 'index'])->name('employer.jobs.index');
         Route::get('/employer/jobs/create', [EmployerJobController::class, 'create'])->name('employer.jobs.create');
@@ -64,11 +64,11 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/employer/jobs/{job}', [EmployerJobController::class, 'destroy'])->name('employer.jobs.destroy');
         Route::get('/employer/jobs/{job}/applications', [EmployerJobController::class, 'applications'])->name('employer.jobs.applications');
         Route::post('/employer/applications/{application}/status', [EmployerJobController::class, 'updateStatus'])->name('employer.applications.updateStatus');
-        Route::patch('/employer/applications/{application}/status', [EmployerJobController::class, 'updateStatus'])->name('employer.applications.updateStatus');
+        Route::patch('/employer/applications/{application}/status', [EmployerJobController::class, 'updateStatus'])->name('employer.applications.updateStatus.patch');
     });
 
-    // Admin Routes - with role-specific session
-    Route::middleware(['role.session:admin'])->group(function () {
+    // Admin Routes - with role check
+    Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
         Route::get('/admin/users', [AdminDashboardController::class, 'users'])->name('admin.users');
         Route::get('/admin/users/{id}', [AdminDashboardController::class, 'showUser'])->name('admin.users.show');
@@ -93,10 +93,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/chat/start/{user}', [ChatController::class, 'startConversation'])->name('chat.start');
 
     // Admin logout
-    Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
-});
+        Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+        
+        // Role Switch Routes
+        Route::middleware('auth')->group(function () {
+            Route::get('/switch/{role}', [RoleSwitchController::class, 'switch'])->name('role.switch');
+        });
+    });
 
-// Admin Employee Management Routes (protected by role middleware)
+// Admin Employee Management Routes (protected by role guard)
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/employees', [EmployeeController::class, 'index'])->name('admin.employees.index');
     Route::get('/admin/employees/create', [EmployeeController::class, 'create'])->name('admin.employees.create');

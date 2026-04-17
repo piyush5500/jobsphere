@@ -1,4 +1,5 @@
 /* Classic UI Styles for JobSphere Dashboards */
+/* Google Fonts loaded via layout: Playfair Display + Source Sans 3 */
 
 :root {
     --classic-primary: #2c3e50;
@@ -22,7 +23,7 @@
 }
 
 body {
-    font-family: 'Georgia', 'Times New Roman', serif;
+    font-family: 'Source Sans 3', 'Georgia', sans-serif;
     background-color: var(--classic-bg);
     color: var(--classic-text);
     line-height: 1.6;
@@ -30,10 +31,33 @@ body {
 
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Georgia', serif;
+    font-family: 'Playfair Display', 'Georgia', serif;
     font-weight: 600;
     color: var(--classic-primary);
 }
+
+/* Admin/Employer/User page containers */
+.admin-users-page,
+.admin-jobs-page,
+.admin-applications-page,
+.employer-jobs-page,
+.user-applications-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Status active/inactive */
+.status-badge.status-active { background: #e8f8f0; color: #27ae60; }
+.status-badge.status-inactive { background: #fde8e8; color: #c0392b; }
+
+/* Recent table inside recent-section */
+.recent-table table { width: 100%; border-collapse: collapse; }
+.recent-table thead { background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); color: white; }
+.recent-table th { padding: 13px 15px; text-align: left; font-size: 0.82rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+.recent-table td { padding: 13px 15px; border-bottom: 1px solid var(--classic-border); vertical-align: middle; }
+.recent-table tbody tr:hover { background: rgba(52,152,219,0.04); }
+.recent-table tbody tr:last-child td { border-bottom: none; }
 
 h1 { font-size: 2rem; }
 h2 { font-size: 1.75rem; }
@@ -342,8 +366,15 @@ h4 { font-size: 1.25rem; }
 .btn-sm { padding: 5px 12px; font-size: 0.8rem; }
 .btn-view { background: var(--classic-accent); color: white; padding: 6px 14px; font-size: 0.85rem; }
 .btn-view:hover { background: #2980b9; text-decoration: none; }
+.btn-warning { background: #fef9e7; color: #d68910; }
+.btn-warning:hover { background: #fdebd0; }
+.btn-edit { background: #fef9e7; color: #d68910; }
+.btn-edit:hover { background: #fdebd0; }
 
-.action-buttons { display: flex; gap: 8px; }
+.action-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* Admin container alias */
+.admin-container { max-width: 1400px; margin: 0 auto; padding: 20px; }
 
 /* Quick Actions */
 .quick-actions { margin-bottom: 30px; }

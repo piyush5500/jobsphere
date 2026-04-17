@@ -1,23 +1,7 @@
 <x-app-layout>
-    <div class="employer-jobs-page">
-        <div class="page-header">
-            <div>
-                <h1 class="page-title">My Job Postings</h1>
-                <p class="page-subtitle">Manage your posted jobs and view applications</p>
-            </div>
-            <a href="{{ route('employer.jobs.create') }}" class="btn btn-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" class="btn-icon" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-                </svg>
-                Post New Job
-            </a>
-        </div>
+    <div class="employer-container employer-jobs-page">\n        <div class="job-page-header job-header-create">\n            <div>\n                <h1 class="text-3xl font-serif mb-2">My Job Postings</h1>\n                <p class="text-gray-500 italic text-lg">Manage your posted jobs and view applications</p>\n            </div>\n            <a href="{{ route('employer.jobs.create') }}" class="btn-modern btn-primary-modern">\n                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">\n                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />\n                </svg>\n                Post New Job\n            </a>\n        </div>
 
-        @if(session('success'))
-        <div class="alert alert-success mb-6">
-            {{ session('success') }}
-        </div>
-        @endif
+@if(session('success'))\n        <div class="alert-modern alert-success">\n            {{ session('success') }}\n        </div>\n        @endif
 
         @if($jobs->count() > 0)
         <div class="table-container">
@@ -80,14 +64,7 @@
             </table>
         </div>
         @else
-        <div class="empty-state card">
-            <svg xmlns="http://www.w3.org/2000/svg" class="empty-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-            </svg>
-            <h3 class="text-lg font-semibold text-gray-900 mb-2">No jobs posted yet</h3>
-            <p class="text-gray-600 mb-4">Start by posting your first job to attract talent.</p>
-            <a href="{{ route('employer.jobs.create') }}" class="btn btn-primary">Post Your First Job</a>
-        </div>
+        <div class="card-modern empty-state">\n            <svg xmlns="http://www.w3.org/2000/svg" class="empty-icon w-16 h-16 text-gray-400 mx-auto mb-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">\n                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />\n            </svg>\n            <h3 class="text-2xl font-bold text-gray-900 mb-4 text-center">No jobs posted yet</h3>\n            <p class="text-gray-600 mb-8 text-lg text-center max-w-md mx-auto leading-relaxed">Start by posting your first job to attract top talent to your company.</p>\n            <div class="text-center">\n                <a href="{{ route('employer.jobs.create') }}" class="btn-modern btn-primary-modern text-lg px-10 py-4">Post Your First Job</a>\n            </div>\n        </div>
         @endif
     </div>
 </x-app-layout>

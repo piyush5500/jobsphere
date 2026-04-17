@@ -1,10 +1,9 @@
 <x-app-layout>
-    <div class="user-applications-page">
-        <!-- Page Header -->
+    <div class="dashboard-container user-applications-page">
         <div class="page-header">
             <div>
-                <h1 class="page-title">My Applications</h1>
-                <p class="page-subtitle">Track your job applications and their status</p>
+                <h1 style="font-family: 'Playfair Display', serif; font-size: 1.7rem; margin-bottom: 4px;">My Applications</h1>
+                <p style="color: #7f8c8d; font-style: italic;">Track your job applications and their status</p>
             </div>
         </div>
 

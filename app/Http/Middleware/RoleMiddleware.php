@@ -15,25 +15,9 @@ class RoleMiddleware
      */
     public function handle($request, Closure $next, $role)
     {
-        // Check if user is authenticated
-        if (!$request->user()) {
-            abort(403);
-        }
-
-        // Check role from session first (this is set during login per role)
-        // Fall back to user role if session role not set
-        $sessionRole = $request->session()->get('role');
-        
-        if ($sessionRole) {
-            // Use session role - this allows multiple role logins in different tabs
-            if ($sessionRole !== $role) {
-                abort(403);
-            }
-        } else {
-            // Fall back to user role if no session role
-            if ($request->user()->role !== $role) {
-                abort(403);
-            }
+        $user = $request->user();
+        if (!$user || $user->role !== $role) {
+            abort(403, 'Access denied. Required role: ' . $role);
         }
 
         return $next($request);

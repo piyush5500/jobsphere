@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="company-dashboard dashboard-container">
+    <div class="company-dashboard dashboard-container" style="max-width: 1400px; margin: 0 auto; padding: 24px;">
         <!-- Welcome Banner -->
         <div class="welcome-banner">
             <div>

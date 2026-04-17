@@ -1,17 +1,12 @@
 <x-app-layout>
-    <div class="admin-applications-page">
-        <!-- Page Header -->
+    <div class="dashboard-container admin-applications-page">
         <div class="page-header">
-            <div>
-                <a href="{{ route('admin.dashboard') }}" class="back-link">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                    </svg>
-                    Back to Dashboard
-                </a>
-                <h1 class="page-title">Manage Applications</h1>
-                <p class="page-subtitle">View and track all job applications across the platform</p>
-            </div>
+            <a href="{{ route('admin.dashboard') }}" class="back-link" style="margin-bottom: 10px; display: inline-flex; align-items: center; gap: 6px;">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                Back to Dashboard
+            </a>
+            <h1 style="font-family: 'Playfair Display', serif; font-size: 1.7rem; margin-bottom: 4px;">Manage Applications</h1>
+            <p style="color: #7f8c8d; font-style: italic;">View and track all job applications across the platform</p>
         </div>
 
         <!-- Application Stats -->

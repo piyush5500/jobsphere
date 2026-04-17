@@ -11,19 +11,19 @@ class AdminController extends Controller
 {
     public function users()
     {
-        $users = User::all();
+        $users = User::latest()->paginate(20);
         return view('admin.users', compact('users'));
     }
 
     public function jobs()
     {
-        $jobs = Job::with('employer')->get();
+        $jobs = Job::with('employer')->latest()->paginate(20);
         return view('admin.jobs', compact('jobs'));
     }
 
     public function applications()
     {
-        $applications = Application::with(['job', 'user'])->get();
+        $applications = Application::with(['job.employer', 'user'])->latest()->paginate(20);
         return view('admin.applications', compact('applications'));
     }
 
