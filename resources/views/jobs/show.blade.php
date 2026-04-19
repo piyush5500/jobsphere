@@ -42,7 +42,7 @@
 .jd-meta-item.deadline-closed { color: #ff7675; }
 
 /* Two Column */
-.jd-layout { display: grid; grid-template-columns: 1fr 340px; gap: 24px; align-items: start; }
+.jd-layout { display: grid; grid-template-columns: 1fr 370px; gap: 30px; align-items: start; }
 
 /* Main Content */
 .jd-main-card { background: white; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); overflow: hidden; border: 1px solid #eef0f3; }
@@ -110,15 +110,31 @@
     padding: 20px;
     text-align: center;
     cursor: pointer;
-    transition: all 0.2s;
-    background: #fafafa;
-    margin-bottom: 14px;
+    transition: all 0.3s ease;
+    background: linear-gradient(145deg, #fafbfc, #f8f9fa);
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    outline: none !important;
 }
-.resume-upload-area:hover { border-color: #3498db; background: #f0f7ff; }
+.resume-upload-area:hover { 
+    border-color: #3498db; 
+    background: linear-gradient(145deg, #f0f7ff, #e3f2fd);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52,152,219,0.15);
+}
+.resume-upload-area:focus-within {
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52,152,219,0.1);
+}
 .resume-upload-area input { display: none; }
-.resume-upload-area svg { width: 32px; height: 32px; color: #7f8c8d; margin: 0 auto 8px; display: block; }
-.resume-upload-area p { font-size: 0.85rem; color: #7f8c8d; margin: 0; }
-.resume-upload-area .upload-hint { font-size: 0.75rem; color: #b2bec3; margin-top: 4px; }
+.resume-upload-area svg { width: 36px; height: 36px; color: #95a5a6; margin-bottom: 12px; display: block; }
+.resume-upload-area p { font-size: 0.9rem; color: #7f8c8d; margin: 0 0 4px 0; font-weight: 500; }
+.resume-upload-area .upload-hint { font-size: 0.8rem; color: #bdc3c7; margin-top: 4px; }
 
 /* Job Details List */
 .jd-detail-list { list-style: none; padding: 0; margin: 0; }
@@ -195,12 +211,8 @@
                 </h2>
                 <div class="jd-desc">{{ $job->description }}</div>
             </div>
-        </div>
 
-        {{-- Sidebar --}}
-        <div class="jd-sidebar">
-
-            {{-- Apply / Status Box --}}
+            {{-- Apply Box moved below Job Description --}}
             @auth
                 @if(auth()->user()->role === 'user')
                     @if($hasApplied)
@@ -209,22 +221,36 @@
                         <p>You've already applied for this job!</p>
                     </div>
                     @elseif($job->isApplicationOpen())
-                    <div class="jd-side-card">
+<div class="jd-side-card" style="position: sticky; top: 20px; align-self: start; width: 370px; margin: 0 auto 24px;">
                         <div class="jd-side-head">Apply for this Position</div>
-                        <div class="jd-side-body">
-                            <form method="POST" action="{{ route('jobs.apply', $job->id) }}" enctype="multipart/form-data">
+<div class="jd-side-body">
+                            {{-- Flash Messages --}}
+                            @if (session('success'))
+                            <div class="applied-box" style="margin-bottom: 16px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:24px;height:24px;color:#27ae60;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                {{ session('success') }}
+                            </div>
+                            @endif
+                            @if (session('error'))
+                            <div style="background:#fde8e8;color:#c0392b;padding:10px 12px;border-radius:6px;font-size:0.85rem;margin-bottom:12px;border-left:3px solid #e74c3c;">
+                                {{ session('error') }}
+                            </div>
+                            @endif
+
+                            <form method="POST" action="{{ route('jobs.apply', $job->id) }}" enctype="multipart/form-data" id="applyForm">
                                 @csrf
                                 @if($errors->has('resume'))
                                 <div style="background:#fde8e8;color:#c0392b;padding:10px 12px;border-radius:6px;font-size:0.82rem;margin-bottom:12px;border-left:3px solid #e74c3c;">
                                     {{ $errors->first('resume') }}
                                 </div>
                                 @endif
-                                <label style="display:block;margin-bottom:6px;font-weight:600;font-size:0.85rem;color:#2c3e50;">
-                                    Resume
-                                    @if(!auth()->user()->resume)
-                                        <span style="color:#e74c3c;">*</span>
-                                    @else
-                                        <span style="color:#7f8c8d;font-weight:400;"> (optional — you have one on file)</span>
+                                <label style="display:block;margin-bottom:{{ auth()->user()->resume ? '12px' : '6px' }};font-weight:600;font-size:0.85rem;color:#2c3e50;">
+                                    Resume {{ !auth()->user()->resume ? '(Recommended)' : '' }}
+                                    @if(auth()->user()->resume)
+                                        <div style="background:#e8f8f0;border:1px solid #27ae60;border-radius:4px;padding:8px;font-size:0.8rem;margin-top:6px;">
+                                            <strong>Current:</strong> {{ basename(auth()->user()->resume) }} 
+                                            <a href="{{ \Illuminate\Support\Facades\Storage::url(auth()->user()->resume) }}" target="_blank" style="color:#27ae60;">View</a>
+                                        </div>
                                     @endif
                                 </label>
                                 <label class="resume-upload-area" for="resume_file">
@@ -233,27 +259,33 @@
                                     <p id="file-name">Click to upload resume</p>
                                     <p class="upload-hint">PDF, DOC, or DOCX accepted</p>
                                 </label>
-                                <button type="submit" class="btn-apply-big" style="background:linear-gradient(135deg,#2c3e50,#3498db);color:white;">
-                                    Submit Application →
+                                <button type="submit" class="btn-apply-big" style="background:linear-gradient(135deg,#2c3e50,#3498db);color:white;" onclick="this.innerHTML='Submitting...'; document.getElementById('applyForm').submit(); return false;">
+                                    <span id="btnText">Submit Application →</span>
                                 </button>
                             </form>
+                            <script>
+                            // Simple loading state
+                            document.getElementById('applyForm').addEventListener('submit', function() {
+                                document.querySelector('.btn-apply-big').innerHTML = 'Submitting...';
+                            });
+                            </script>
                         </div>
                     </div>
                     @else
-                    <div class="closed-box">
+                    <div class="closed-box" style="width: 370px; margin: 0 auto 24px;">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         <p>Applications are closed for this job.</p>
                     </div>
                     @endif
                 @elseif(auth()->user()->role === 'employer')
-                <div class="employer-box">
+                <div class="employer-box" style="width: 370px; margin: 0 auto 24px;">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     <p>You are logged in as an employer and cannot apply for jobs.</p>
                 </div>
                 @endif
             @else
                 @if($job->isApplicationOpen())
-                <div class="login-box-apply">
+                <div class="login-box-apply" style="width: 370px; margin: 0 auto 24px;">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
                     <p>Sign in to apply for this position</p>
                     <a href="{{ route('login') }}" class="btn-login-apply">Login to Apply</a>
@@ -262,12 +294,17 @@
                     </div>
                 </div>
                 @else
-                <div class="closed-box">
+                <div class="closed-box" style="width: 370px; margin: 0 auto 24px;">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     <p>Applications are closed for this job.</p>
                 </div>
                 @endif
             @endauth
+
+        </div>
+
+        {{-- Sidebar - Now only Job Details --}}
+        <div class="jd-sidebar">
 
             {{-- Job Details Card --}}
             <div class="jd-side-card">
@@ -278,10 +315,6 @@
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                             <div><strong>Type</strong><br>{{ $job->job_type }}</div>
                         </li>
-                        <li>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                            <div><strong>Location</strong><br>{{ $job->location }}</div>
-                        </li>
                         @if($job->salary)
                         <li>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -289,8 +322,8 @@
                         </li>
                         @endif
                         <li>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                            <div><strong>Company</strong><br>{{ $job->employer->name }}</div>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            <div><strong>Location</strong><br>{{ $job->location }}</div>
                         </li>
                         <li>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
@@ -299,12 +332,7 @@
                         @if($job->application_deadline)
                         <li>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <div>
-                                <strong>Deadline</strong><br>
-                                <span style="color:{{ $job->isApplicationOpen() ? '#e67e22' : '#e74c3c' }};">
-                                    {{ \Carbon\Carbon::parse($job->application_deadline)->format('M d, Y g:i A') }}
-                                </span>
-                            </div>
+                            <div><strong>Deadline</strong><br>{{ \Carbon\Carbon::parse($job->application_deadline)->format('M d, Y') }}</div>
                         </li>
                         @endif
                     </ul>
@@ -323,3 +351,4 @@
     </div>
 </div>
 </x-app-layout>
+

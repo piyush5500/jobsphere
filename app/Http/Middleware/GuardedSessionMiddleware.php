@@ -28,8 +28,8 @@ class GuardedSessionMiddleware
             $userId = $sessionData['user_id'] ?? null;
             $user = \App\Models\User::find($userId);
             
-            if ($user) {
-                // Use the appropriate guard
+if ($user && !$user->isAdmin() && $user->isActive()) {
+                // Use the appropriate guard only if active
                 Auth::guard($guard)->setUser($user);
             }
         }

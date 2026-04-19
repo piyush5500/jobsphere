@@ -49,6 +49,15 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        // Check if user is active after successful credential match (only for employer/jobseeker)
+        $user = Auth::user();
+if ($user && $user->isEmployer() && !$user->isActive()) {
+            Auth::logout();
+            throw ValidationException::withMessages([
+                'email' => 'Your account is currently paused or inactive. Please contact admin to activate.',
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 

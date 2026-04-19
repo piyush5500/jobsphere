@@ -33,7 +33,7 @@ class AdminAuthController extends Controller
         $user = User::where('email', $request->email)->first();
         
         if ($user && Hash::check($request->password, $user->password) && $user->role === 'admin') {
-            auth()->login($user);
+            Auth::login($user);
             $request->session()->regenerate();
             
             return redirect()->intended('/admin/dashboard')->with('success', 'Welcome back, Admin!');
@@ -49,7 +49,7 @@ class AdminAuthController extends Controller
      */
     public function logout(Request $request): RedirectResponse
     {
-        auth()->logout();
+        Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 

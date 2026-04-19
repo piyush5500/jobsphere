@@ -32,14 +32,18 @@ Route::middleware('guest')->group(function () {
 // Protected Routes
 Route::middleware(['auth'])->group(function () {
     // Dashboard - redirects based on role
-    Route::get('/dashboard', function () {
+Route::get('/dashboard', function () {
         $user = auth()->user();
+        \Log::info('Dashboard access: user_id=' . ($user ? $user->id : 'null') . ', user_role=' . ($user ? $user->role : 'null') . ', url=' . request()->url());
         if ($user) {
             if ($user->role === 'admin') {
+                \Log::info('Dashboard redirecting admin to admin.dashboard');
                 return redirect()->route('admin.dashboard');
             } elseif ($user->role === 'employer') {
+                \Log::info('Dashboard redirecting employer to employer.dashboard');
                 return redirect()->route('employer.dashboard');
             } else {
+                \Log::info('Dashboard redirecting user to user.dashboard');
                 return redirect()->route('user.dashboard');
             }
         }

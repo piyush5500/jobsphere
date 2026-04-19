@@ -77,14 +77,7 @@ class UserDashboardController extends Controller
                 ->get();
         }
 
-// Get company staff (if company has staff) - REMOVED due to missing database columns 'company_id'/'employer_id' in users table
-// TODO: Reimplement after adding migration for employer_id column if company staff feature needed
-        // $companyStaff = User::where('company_id', $user->id)
-        //     ->orWhere('employer_id', $user->id)
-        //     ->take(5)
-        //     ->get();
-
-        return view('user.dashboard', compact(
+return view('user.dashboard', compact(
             'applications', 
             'totalApplications', 
             'availableJobs', 
@@ -94,7 +87,6 @@ class UserDashboardController extends Controller
             'companyJobs',
             'companyApplications',
             'companyStats'
-            // 'companyStaff' - removed
         ));
     }
 

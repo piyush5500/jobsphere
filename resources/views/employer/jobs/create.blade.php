@@ -193,13 +193,31 @@
 .pj-btn-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(52,152,219,0.4); }
 .pj-btn-submit svg { width: 16px; height: 16px; }
 
+.flatpickr-calendar { box-shadow: 0 4px 20px rgba(0,0,0,0.15); border-radius: 8px; border: none; }
+.flatpickr-day.selected, .flatpickr-day.selected:hover { background: #3498db; border-color: #3498db; }
+.flatpickr-day.today { border-color: #3498db; }
+.flatpickr-day.prevMonthDay, .flatpickr-day.nextMonthDay, .flatpickr-day.disabled { color: #bdc3c7 !important; cursor: not-allowed; }
+
 @media (max-width: 640px) {
     .pj-row { grid-template-columns: 1fr; }
     .type-grid { grid-template-columns: repeat(2, 1fr); }
     .pj-header { padding: 24px 20px; }
     .pj-card-body { padding: 18px; }
 }
+
 </style>
+@vite(['resources/js/flatpickr.js'])
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    flatpickr("[name='application_deadline']", {
+        minDate: "today",
+        dateFormat: "Y-m-d",
+        enableTime: false,
+        allowInput: true,
+        clickOpens: true
+    });
+});
+</script>
 
 <div class="post-job-wrap">
 
@@ -319,8 +337,8 @@
                 <div class="pj-row">
                     <div class="pj-field">
                         <label class="pj-label">Application Deadline <span class="opt">(optional)</span></label>
-                        <input type="datetime-local" name="application_deadline" class="pj-input" value="{{ old('application_deadline') }}">
-                        <p class="pj-hint">Leave blank for no deadline</p>
+<input type="date" name="application_deadline" class="pj-input" min="{{ today() }}" value="{{ old('application_deadline') }}">
+<p class="pj-hint">Select date only - future dates from today. Leave blank for no deadline.</p>
                     </div>
                     <div class="pj-field">
                         <label class="pj-label">Listing Status</label>

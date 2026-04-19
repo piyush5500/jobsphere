@@ -50,7 +50,25 @@
 .pj-btn-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(230,126,34,0.4); }
 .pj-btn-submit svg { width: 16px; height: 16px; }
 @media (max-width: 640px) { .pj-row { grid-template-columns: 1fr; } .type-grid { grid-template-columns: repeat(2, 1fr); } .pj-header { padding: 24px 20px; } .pj-card-body { padding: 18px; } }
+
+.flatpickr-calendar { box-shadow: 0 4px 20px rgba(0,0,0,0.15); border-radius: 8px; border: none; }
+.flatpickr-day.selected, .flatpickr-day.selected:hover { background: #e67e22; border-color: #e67e22; }
+.flatpickr-day.today { border-color: #e67e22; }
+.flatpickr-day.prevMonthDay, .flatpickr-day.nextMonthDay, .flatpickr-day.disabled { color: #bdc3c7 !important; cursor: not-allowed; }
+
 </style>
+@vite(['resources/js/flatpickr.js'])
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    flatpickr("[name='application_deadline']", {
+        minDate: "today",
+        dateFormat: "Y-m-d",
+        enableTime: false,
+        allowInput: true,
+        clickOpens: true
+    });
+});
+</script>
 
 <div class="post-job-wrap">
 
@@ -149,9 +167,9 @@
                 <div class="pj-row">
                     <div class="pj-field">
                         <label class="pj-label">Application Deadline <span class="opt">(optional)</span></label>
-                        <input type="datetime-local" name="application_deadline" class="pj-input"
-                            value="{{ old('application_deadline', $job->application_deadline ? \Carbon\Carbon::parse($job->application_deadline)->format('Y-m-d\TH:i') : '') }}">
-                        <p class="pj-hint">Leave blank for no deadline</p>
+                        <input type="date" name="application_deadline" class="pj-input" min="{{ today() }}"
+                            value="{{ old('application_deadline', $job->application_deadline ? \Carbon\Carbon::parse($job->application_deadline)->format('Y-m-d') : '') }}">
+                        <p class="pj-hint">Select date only - future dates from today. Leave blank for no deadline.</p>
                     </div>
                     <div class="pj-field">
                         <label class="pj-label">Listing Status</label>

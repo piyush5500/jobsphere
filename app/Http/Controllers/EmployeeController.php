@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 
@@ -14,7 +15,7 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $employees = User::where('role', 'employer')->latest()->paginate(20);
+$employees = User::where('role', 'employer')->withCount('jobs')->orderBy('id', 'asc')->paginate(20);
         return view('admin.employees.index', compact('employees'));
     }
 
@@ -104,10 +105,10 @@ class EmployeeController extends Controller
         
         if ($employee->is_active) {
             $employee->suspend();
-            $message = 'Employee has been paused.';
+            $message = 'Company account paused.';
         } else {
             $employee->activate();
-            $message = 'Employee has been activated.';
+            $message = 'Company account activated.';
         }
 
         return back()->with('success', $message);

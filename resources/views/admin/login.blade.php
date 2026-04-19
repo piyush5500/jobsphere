@@ -147,7 +147,7 @@
             </button>
 
             <div class="back-home">
-                <a href="{{ route('welcome') }}">← Back to Home</a>
+                <a href="/">← Back to Home</a>
             </div>
         </form>
     </div>

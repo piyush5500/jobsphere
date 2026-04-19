@@ -11,7 +11,7 @@ class AdminController extends Controller
 {
     public function users()
     {
-        $users = User::latest()->paginate(20);
+$users = User::where('role', '!=', 'admin')->latest()->paginate(20);
         return view('admin.users', compact('users'));
     }
 
@@ -43,7 +43,11 @@ class AdminController extends Controller
         
         if ($user->is_active) {
             $user->suspend();
-            $message = 'Jobseeker has been paused.';
+            // Force logout if user was logged in (for consistency)
+            Auth::logout();
+            request()->session()->invalidate();
+            request()->session()->regenerateToken();
+            $message = 'Jobseeker has been paused and logged out.';
         } else {
             $user->activate();
             $message = 'Jobseeker has been activated.';
